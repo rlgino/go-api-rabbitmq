@@ -1,13 +1,16 @@
 package main
 
 import (
-	"github.com/rlgino/rabbitmq/config"
-	"github.com/streadway/amqp"
+	"encoding/json"
 	"log"
 	"os"
+
+	"github.com/streadway/amqp"
+
+	"github.com/rlgino/rabbitmq/config"
 )
 
-func main(){
+func main() {
 	amqpServerUrl := os.Getenv("AMQP_SERVER_URL")
 	amqpServerUrl = "amqp://guest:guest@localhost:5672/"
 
@@ -28,7 +31,6 @@ func main(){
 		log.Println(err.Error())
 	}
 
-
 	log.Println("Successfully connected to RabbitMQ")
 	log.Println("Waiting for messages")
 
@@ -36,8 +38,14 @@ func main(){
 
 	go func() {
 		for message := range messages {
+
+			productCreated := struct {
+				ProdID int `json:"prod_id"`
+				UserID int `json:"user_id"`
+			}{}
+			json.Unmarshal(message.Body, &productCreated)
 			// For example, show received message in a console.
-			log.Printf(" > Received message: %s\n", message.Body)
+			log.Printf(" > Notifier that user %d create a product %d\n", productCreated.UserID, productCreated.ProdID)
 		}
 	}()
 

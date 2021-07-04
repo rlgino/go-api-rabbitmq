@@ -1,4 +1,4 @@
 package config
 
-const QUEUE="QueueService1"
+const QUEUE="com.rlgino.go.product_created"
 const AMQPURL="amqp://guest:guest@localhost:5672/"
