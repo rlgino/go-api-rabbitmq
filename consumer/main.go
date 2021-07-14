@@ -6,8 +6,6 @@ import (
 	"os"
 
 	"github.com/streadway/amqp"
-
-	"github.com/rlgino/rabbitmq/config"
 )
 
 func main() {
@@ -26,7 +24,34 @@ func main() {
 	}
 	defer channel.Close()
 
-	messages, err := channel.Consume(config.QUEUE, "", true, false, false, false, nil)
+	err = channel.ExchangeDeclare("logs_topic", "topic", true, false, false, false, nil)
+	if err != nil {
+		log.Println(err.Error())
+	}
+
+	q, err := channel.QueueDeclare("rlgino.product_creator.user_notifier", true, false, false, false, nil)
+	if err != nil {
+		log.Println(err.Error())
+		return
+	}
+	err = channel.QueueBind(
+		q.Name,                   // queue name
+		"rlgino.product_creator.*", // routing key
+		"logs_topic",             // exchange
+		false,
+		nil)
+	if err != nil {
+		log.Println(err.Error())
+	}
+
+	messages, err := channel.Consume(
+		q.Name,
+		"",
+		true,
+		false,
+		false,
+		false,
+		nil)
 	if err != nil {
 		log.Println(err.Error())
 	}

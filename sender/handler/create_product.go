@@ -8,8 +8,6 @@ import (
 	"github.com/streadway/amqp"
 )
 
-const queue = "com.rlgino.go.product_created"
-
 type RegisterProduct struct {
 	channel *amqp.Channel
 }
@@ -19,8 +17,15 @@ func NewRegisterProductHandler(connectRabbitMQ *amqp.Connection) RegisterProduct
 	if err != nil {
 		panic(err)
 	}
+	err = channel.ExchangeDeclare(
+		"logs_topic",
+		"topic",
+		true,
+		false,
+		false,
+		false,
+		nil)
 
-	_, err = channel.QueueDeclare(queue, true, false, false, false, nil)
 	if err != nil {
 		panic(err)
 	}
@@ -55,7 +60,12 @@ func (handler *RegisterProduct) Handle(ctx *fiber.Ctx) error {
 		ContentType: "application/json",
 		Body:        event,
 	}
-	if err := handler.channel.Publish("", queue, false, false, message); err != nil {
+	if err := handler.channel.Publish(
+		"logs_topic",
+		"rlgino.product_creator.java_consumer",
+		false,
+		false,
+		message); err != nil {
 		return err
 	}
 
