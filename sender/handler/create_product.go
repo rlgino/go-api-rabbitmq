@@ -62,7 +62,7 @@ func (handler *RegisterProduct) Handle(ctx *fiber.Ctx) error {
 	}
 	if err := handler.channel.Publish(
 		"logs_topic",
-		"rlgino.product_creator.java_consumer",
+		"rlgino.product_creator.1.event.product.created",
 		false,
 		false,
 		message); err != nil {

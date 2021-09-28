@@ -8,7 +8,7 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/streadway/amqp"
 
-	"github.com/rlgino/rabbitmq/sender/handler"
+	"github.com/rlgino/go-api-rabbitmq/sender/handler"
 )
 
 func main() {

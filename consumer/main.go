@@ -29,14 +29,14 @@ func main() {
 		log.Println(err.Error())
 	}
 
-	q, err := channel.QueueDeclare("rlgino.product_creator.user_notifier", true, false, false, false, nil)
+	q, err := channel.QueueDeclare("product_notifier.user.publish_on_product_created", true, false, false, false, nil)
 	if err != nil {
 		log.Println(err.Error())
 		return
 	}
 	err = channel.QueueBind(
 		q.Name,                   // queue name
-		"rlgino.product_creator.*", // routing key
+		"rlgino.product_creator.1.event.product.created", // routing key
 		"logs_topic",             // exchange
 		false,
 		nil)

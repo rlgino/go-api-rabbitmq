@@ -1,4 +1,4 @@
-module github.com/rlgino/rabbitmq
+module github.com/rlgino/go-api-rabbitmq
 
 go 1.16
 
